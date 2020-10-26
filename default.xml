@@ -5,23 +5,24 @@
 
   <default remote="lmp-mirrors" revision="master" sync-j="4"/>
 
-  <project name="bitbake" revision="39888b750df12478e8bdea6727cca112dce1df85"/>
+  <project name="bitbake" revision="29081375659e3dcf1c578cd98ab2c8a2e9f07ca8"/>
   <project name="lmp-tools" path="tools/lmp-tools" remote="fio">
     <linkfile dest="setup-environment" src="setup-environment"/>
   </project>
-  <project name="meta-freescale" path="layers/meta-freescale" revision="6bc3d8825c20d21528e24a7237ff7392e01a81bd"/>
-  <project name="meta-freescale-3rdparty" path="layers/meta-freescale-3rdparty" revision="c15c74ad1c973724e6b83b2c1ad862c7caf9ed32"/>
-  <project name="meta-intel" path="layers/meta-intel" revision="31840bc6cf6e1d86ef911ea214da2169a3c885ca"/>
-  <project name="meta-lmp" path="layers/meta-lmp" remote="fio" revision="f751def379a2c715b1d508614a5016fcf4650736"/>
-  <project name="meta-openembedded" path="layers/meta-openembedded" revision="76b83194b31ca57790fdffb43c81c8cb0131f527"/>
-  <project name="meta-raspberrypi" path="layers/meta-raspberrypi" revision="64bd47fe588e1684b1ec49fa01d1e1176d93d697"/>
-  <project name="meta-riscv" path="layers/meta-riscv" revision="4354bf2888149a3641ef2eeb05a73918616e154b"/>
-  <project name="meta-rtlwifi" path="layers/meta-rtlwifi" revision="7b556aa2265cfc41e6e5fda7085619436fe9a385"/>
-  <project name="meta-security" path="layers/meta-security" revision="98ff502d4096331e2b8a8e4044860b23bf6f8ea5"/>
-  <project name="meta-toradex-bsp-common" path="layers/meta-toradex-bsp-common" revision="76e40e33856c0b8f187aaba3f2b42a23eb62d2b8"/>
-  <project name="meta-toradex-nxp" path="layers/meta-toradex-nxp" revision="27643dce4e3ef566d84e45f1b219c57e2e438e61"/>
-  <project name="meta-updater" path="layers/meta-updater" revision="35240e670e811d149d4765e4a6a8fceae7d642df"/>
-  <project name="meta-virtualization" path="layers/meta-virtualization" revision="65c40e6e57c92200160125a0776d88a64c1bf912"/>
-  <project name="meta-yocto" path="layers/meta-yocto" revision="9f108add55395e82081907675f881052c336ae26"/>
-  <project name="openembedded-core" path="layers/openembedded-core" revision="ce7ac226336fe1e578fd0959567c95c4ac957f85"/>
+  <project name="meta-arm" path="layers/meta-arm" revision="553654ece79f3187aa4ff6749276035e43207e3d"/>
+  <project name="meta-freescale" path="layers/meta-freescale" revision="350017397b22930c854a8024a0d7b825f000de26"/>
+  <project name="meta-freescale-3rdparty" path="layers/meta-freescale-3rdparty" revision="b85d08a55cb833bfc4e8b5034ff804286c67620e"/>
+  <project name="meta-intel" path="layers/meta-intel" revision="a064295cd5e40f83e86378f86dd42d7f783a6eea"/>
+  <project name="meta-lmp" path="layers/meta-lmp" remote="fio" revision="4461fc3e23718c54f5461c0d2f96686c336fd147"/>
+  <project name="meta-openembedded" path="layers/meta-openembedded" revision="7e60006ecc3d9f8cca6c2394a79b14e54aedf474"/>
+  <project name="meta-raspberrypi" path="layers/meta-raspberrypi" revision="2324089fef0e5e23c4a74bceb7a99b3bab8f73be"/>
+  <project name="meta-riscv" path="layers/meta-riscv" revision="d9b156970327c405ee380baf20af01a53b334401"/>
+  <project name="meta-rtlwifi" path="layers/meta-rtlwifi" revision="ae22ff34ab50321977b8c6e646ef25b93b8a079f"/>
+  <project name="meta-security" path="layers/meta-security" revision="ab56b1df52c5b28680656fc00bfe143a7e069097"/>
+  <project name="meta-updater" path="layers/meta-updater" revision="d73639e72b336341e7014614c4e556f3ba520d25"/>
+  <project name="meta-virtualization" path="layers/meta-virtualization" revision="7a8167fa82621dd606260450b1e648e50a1d79ab"/>
+  <project name="meta-yocto" path="layers/meta-yocto" revision="c601f5bd5ddfe8e8be709a4541b95c772a0d3b6f"/>
+  <project name="openembedded-core" path="layers/openembedded-core" revision="ea5128fde10eb9be7fefbbb87ae6181edd2bcdff"/>
+  <project name="meta-xilinx" path="layers/meta-xilinx" revision="fa72812585023bba487502d89b16656246ce6086"/>
+  <project name="meta-xilinx-tools" path="layers/meta-xilinx-tools" revision="d7b24fdfaa7627b90bf8e94eddd00f2a74cb585a"/>
 </manifest>
