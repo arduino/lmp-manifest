@@ -1,28 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <manifest>
-  <remote fetch="https://github.com/foundriesio" name="fio"/>
-  <remote fetch="https://source.foundries.io/lmp-mirrors" name="lmp-mirrors"/>
-
-  <default remote="lmp-mirrors" revision="master" sync-j="4"/>
-
-  <project name="bitbake" revision="29081375659e3dcf1c578cd98ab2c8a2e9f07ca8"/>
-  <project name="lmp-tools" path="tools/lmp-tools" remote="fio">
-    <linkfile dest="setup-environment" src="setup-environment"/>
-  </project>
-  <project name="meta-arm" path="layers/meta-arm" revision="553654ece79f3187aa4ff6749276035e43207e3d"/>
-  <project name="meta-freescale" path="layers/meta-freescale" revision="350017397b22930c854a8024a0d7b825f000de26"/>
-  <project name="meta-freescale-3rdparty" path="layers/meta-freescale-3rdparty" revision="b85d08a55cb833bfc4e8b5034ff804286c67620e"/>
-  <project name="meta-intel" path="layers/meta-intel" revision="a064295cd5e40f83e86378f86dd42d7f783a6eea"/>
-  <project name="meta-lmp" path="layers/meta-lmp" remote="fio" revision="45c66222d446924a161a5f16315c39d3302b3f79"/>
-  <project name="meta-openembedded" path="layers/meta-openembedded" revision="7e60006ecc3d9f8cca6c2394a79b14e54aedf474"/>
-  <project name="meta-raspberrypi" path="layers/meta-raspberrypi" revision="2324089fef0e5e23c4a74bceb7a99b3bab8f73be"/>
-  <project name="meta-riscv" path="layers/meta-riscv" revision="d9b156970327c405ee380baf20af01a53b334401"/>
-  <project name="meta-rtlwifi" path="layers/meta-rtlwifi" revision="ae22ff34ab50321977b8c6e646ef25b93b8a079f"/>
-  <project name="meta-security" path="layers/meta-security" revision="ab56b1df52c5b28680656fc00bfe143a7e069097"/>
-  <project name="meta-updater" path="layers/meta-updater" revision="d73639e72b336341e7014614c4e556f3ba520d25"/>
-  <project name="meta-virtualization" path="layers/meta-virtualization" revision="7a8167fa82621dd606260450b1e648e50a1d79ab"/>
-  <project name="meta-yocto" path="layers/meta-yocto" revision="c601f5bd5ddfe8e8be709a4541b95c772a0d3b6f"/>
-  <project name="openembedded-core" path="layers/openembedded-core" revision="ea5128fde10eb9be7fefbbb87ae6181edd2bcdff"/>
-  <project name="meta-xilinx" path="layers/meta-xilinx" revision="fa72812585023bba487502d89b16656246ce6086"/>
-  <project name="meta-xilinx-tools" path="layers/meta-xilinx-tools" revision="d7b24fdfaa7627b90bf8e94eddd00f2a74cb585a"/>
+  <include name="lmp-base.xml" />
+  <include name="lmp-bsp.xml" />
 </manifest>
