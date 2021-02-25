@@ -1,27 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <manifest>
-  <remote fetch="https://github.com/foundriesio" name="fio"/>
-  <remote fetch="https://source.foundries.io/lmp-mirrors" name="lmp-mirrors"/>
-
-  <default remote="lmp-mirrors" revision="master" sync-j="4"/>
-
-  <project name="bitbake" revision="39888b750df12478e8bdea6727cca112dce1df85"/>
-  <project name="lmp-tools" path="tools/lmp-tools" remote="fio">
-    <linkfile dest="setup-environment" src="setup-environment"/>
-  </project>
-  <project name="meta-freescale" path="layers/meta-freescale" revision="6bc3d8825c20d21528e24a7237ff7392e01a81bd"/>
-  <project name="meta-freescale-3rdparty" path="layers/meta-freescale-3rdparty" revision="c15c74ad1c973724e6b83b2c1ad862c7caf9ed32"/>
-  <project name="meta-intel" path="layers/meta-intel" revision="31840bc6cf6e1d86ef911ea214da2169a3c885ca"/>
-  <project name="meta-lmp" path="layers/meta-lmp" remote="fio" revision="f751def379a2c715b1d508614a5016fcf4650736"/>
-  <project name="meta-openembedded" path="layers/meta-openembedded" revision="76b83194b31ca57790fdffb43c81c8cb0131f527"/>
-  <project name="meta-raspberrypi" path="layers/meta-raspberrypi" revision="64bd47fe588e1684b1ec49fa01d1e1176d93d697"/>
-  <project name="meta-riscv" path="layers/meta-riscv" revision="4354bf2888149a3641ef2eeb05a73918616e154b"/>
-  <project name="meta-rtlwifi" path="layers/meta-rtlwifi" revision="7b556aa2265cfc41e6e5fda7085619436fe9a385"/>
-  <project name="meta-security" path="layers/meta-security" revision="98ff502d4096331e2b8a8e4044860b23bf6f8ea5"/>
-  <project name="meta-toradex-bsp-common" path="layers/meta-toradex-bsp-common" revision="76e40e33856c0b8f187aaba3f2b42a23eb62d2b8"/>
-  <project name="meta-toradex-nxp" path="layers/meta-toradex-nxp" revision="27643dce4e3ef566d84e45f1b219c57e2e438e61"/>
-  <project name="meta-updater" path="layers/meta-updater" revision="35240e670e811d149d4765e4a6a8fceae7d642df"/>
-  <project name="meta-virtualization" path="layers/meta-virtualization" revision="65c40e6e57c92200160125a0776d88a64c1bf912"/>
-  <project name="meta-yocto" path="layers/meta-yocto" revision="9f108add55395e82081907675f881052c336ae26"/>
-  <project name="openembedded-core" path="layers/openembedded-core" revision="ce7ac226336fe1e578fd0959567c95c4ac957f85"/>
+  <include name="lmp-base.xml" />
+  <include name="lmp-bsp.xml" />
 </manifest>

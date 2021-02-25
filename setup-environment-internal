@@ -139,7 +139,7 @@ export PATH=$(echo "$PATH" |
 export BB_ENV_EXTRAWHITE="MACHINE DISTRO TCLIBC TCMODE GIT_PROXY_COMMAND \
         http_proxy ftp_proxy https_proxy all_proxy ALL_PROXY no_proxy \
         SSH_AGENT_PID SSH_AUTH_SOCK BB_SRCREV_POLICY SDKMACHINE \
-        BB_NUMBER_THREADS"
+        BB_NUMBER_THREADS BB_LOGCONFIG BB_CONSOLELOG"
 
 mkdir -p "${BUILDDIR}"/conf && cd "${BUILDDIR}"
 if [ -f "conf/auto.conf" ]; then
@@ -167,10 +167,15 @@ if [ ! -f "conf/keys/dev.key" -a ! -f "conf/keys/dev.crt" ]; then
     ln -sf "${MANIFESTS}"/conf/keys/dev.crt conf/keys/dev.crt
 fi
 # Link default iMX HAB4 development keys and certificate if not set by the user
-if [ ! -e "conf/imx_hab4" ]; then
-    ln -sf "${MANIFESTS}"/conf/imx_hab4 conf/keys/imx_hab4
+if [ ! -e "conf/keys/imx_hab4" ]; then
+    ln -sf ${OEROOT}/tools/lmp-tools/security/imx_hab4 conf/keys/imx_hab4
 fi
 ln -sf "${MANIFESTS}"/conf/bblayers.conf conf/bblayers.conf
+ln -sf "${MANIFESTS}"/conf/bblayers-base.inc conf/bblayers-base.inc
+ln -sf "${MANIFESTS}"/conf/bblayers-bsp.inc conf/bblayers-bsp.inc
+if [ -f "${MANIFESTS}"/conf/bblayers-factory.inc ]; then
+    ln -sf "${MANIFESTS}"/conf/bblayers-factory.inc conf/bblayers-factory.inc
+fi
 ln -sf "${MANIFESTS}"/README.md README.md
 
 ln -sf "${MANIFESTS}" "${OEROOT}"/layers/
@@ -291,16 +296,17 @@ For more information about Linux microPlatform see:
 For more information about OpenEmbedded see their website:
     http://www.openembedded.org/
 
-Your build environemnt has been configured with:
+Your build environment has been configured with:
 
     MACHINE = ${MACHINE}
-    SDKMACHINE = ${SDKMACHINE}
     DISTRO = ${DISTRO}
 
 You can now run 'bitbake <target>'
 
 Some common targets are:
-    lmp-mini-image
-    lmp-gateway-image
+    lmp-mini-image          - minimal OSTree + OTA capable image
+    lmp-base-console-image  - mini-image + Docker container runtime
+    lmp-gateway-image       - base-console-image + edge gateway related utilities
+    lmp-factory-image       - default (and only available) at FoundriesFactory
 
 EOF
