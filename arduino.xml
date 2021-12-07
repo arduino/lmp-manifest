@@ -5,7 +5,7 @@
           name="subscriber-overrides" />
 
   <project name="meta-subscriber-overrides"
-           revision="experimental"
+           revision="devel"
            path="layers/meta-subscriber-overrides"
            remote="subscriber-overrides"/>
 </manifest>
