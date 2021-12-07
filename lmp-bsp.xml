@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <manifest>
-  <remote fetch="https://github.com/foundriesio" name="fio"/>
   <remote fetch="https://source.foundries.io/lmp-mirrors" name="lmp-mirrors"/>
 
   <default remote="lmp-mirrors" revision="master" sync-j="4"/>
 
-  <project name="meta-arm" path="layers/meta-arm" revision="ac9f59ca6277f88f2714ed2c14e8f3c33bc47f4a"/>
-  <project name="meta-freescale" path="layers/meta-freescale" revision="d05c5c6654a64188422f88cdc82b6b97610d5591"/>
-  <project name="meta-freescale-3rdparty" path="layers/meta-freescale-3rdparty" revision="b6da6dd9ce80db442cbc8737641f3ee54ee98312"/>
-  <project name="meta-intel" path="layers/meta-intel" revision="8e72e716c96d3480c3e1cf2096a8e64c51b9f24b"/>
-  <project name="meta-raspberrypi" path="layers/meta-raspberrypi" remote="fio" revision="b710a409e01c99c3da1d69c33e0c355999f33a97"/>
-  <project name="meta-riscv" path="layers/meta-riscv" revision="b022614bc4a2ddc744ab976d87295758710382d2"/>
-  <project name="meta-rtlwifi" path="layers/meta-rtlwifi" revision="ccf8cdc0e2282cf3989d35504989dc404bbe1370"/>
-  <project name="meta-yocto" path="layers/meta-yocto" revision="ac4a956f606d9cb4e025af80e6f4dcb74cbfd941"/>
-  <project name="meta-xilinx" path="layers/meta-xilinx" revision="eb4ba06eb1bc7743dba2412b0c903ec5d5628cae"/>
-  <project name="meta-xilinx-tools" path="layers/meta-xilinx-tools" revision="37e0988018e95cdcf2684a77d4e9e8cd5610ccaf"/>
-  <project name="meta-ti" path="layers/meta-ti" revision="9ad8bc7fa3828dd9a48336e6847b782ac7018cf6"/>
+  <project name="meta-arm" path="layers/meta-arm" revision="328c85778becef438ee3e46fac41656625889d80"/>
+  <project name="meta-freescale" path="layers/meta-freescale" revision="2027a8045384463b7c793381dd887b0591037e2f"/>
+  <project name="meta-freescale-3rdparty" path="layers/meta-freescale-3rdparty" revision="060967a7df43e8505568aa3d54fd8addcecab98d"/>
+  <project name="meta-intel" path="layers/meta-intel" revision="4c7eecf2550fca9136a332400be6da358d264cb6"/>
+  <project name="meta-raspberrypi" path="layers/meta-raspberrypi" revision="9d372828ba657340a42e31875d2326e5f6753403"/>
+  <project name="meta-riscv" path="layers/meta-riscv" revision="69f38710a01fc5c8de35d69601a5d5bb1044886b"/>
+  <project name="meta-rtlwifi" path="layers/meta-rtlwifi" revision="934fa3afddcbf1beb35417b915daac22701736e9"/>
+  <project name="meta-st-stm32mp" path="layers/meta-st-stm32mp" revision="d9834b916ebd2831b2137d4c2a25d79ac3afb0e0"/>
+  <project name="meta-yocto" path="layers/meta-yocto" revision="d9c00aa32a544d515e72b4e37991cc48b9e6c144"/>
+  <project name="meta-xilinx" path="layers/meta-xilinx" revision="19088ae658f668847b30efcb9e113d048973de07"/>
+  <project name="meta-xilinx-tools" path="layers/meta-xilinx-tools" revision="ba75a71f64f2e31c2d585011076382683bdbba0b"/>
+  <project name="meta-tegra" path="layers/meta-tegra" revision="67c02c5a94ed151c769d03904423a916ef2ba339"/>
+  <project name="meta-ti" path="layers/meta-ti" revision="d54da744941ff97f2502bad2d7c51c5387bde929"/>
 </manifest>
