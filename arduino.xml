@@ -5,7 +5,7 @@
           name="subscriber-overrides" />
 
   <project name="meta-partner-arduino"
-           revision="efb061002a26f0aab77b40e340ad6c56fb101955"
+           revision="25c0353626e2230fc96fa3409d5c69b5e52db616"
            path="layers/meta-partner-arduino"
            remote="subscriber-overrides"/>
 </manifest>
