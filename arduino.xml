@@ -2,10 +2,10 @@
   <include name="default.xml" />
 
   <remote fetch="https://github.com/arduino"
-          name="subscriber-overrides" />
+          name="partner-arduino" />
 
   <project name="meta-partner-arduino"
            revision="395e85a85b6d80bed011b73895c750efc2ee04a4"
            path="layers/meta-partner-arduino"
-           remote="subscriber-overrides"/>
+           remote="partner-arduino"/>
 </manifest>
