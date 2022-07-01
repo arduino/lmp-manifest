@@ -8,4 +8,9 @@
            revision="8aa078a3e1119580ebcdfb443dfe11e5d888b482"
            path="layers/meta-partner-arduino"
            remote="partner-arduino"/>
+
+  <project name="meta-subscriber-overrides"
+           revision="next"
+           path="layers/meta-subscriber-overrides"
+           remote="partner-arduino"/>
 </manifest>
