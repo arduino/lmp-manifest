@@ -10,7 +10,7 @@
            remote="partner-arduino"/>
 
   <project name="meta-subscriber-overrides"
-           revision="devel"
+           revision="next"
            path="layers/meta-subscriber-overrides"
            remote="partner-arduino"/>
 </manifest>
