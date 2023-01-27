@@ -5,7 +5,7 @@
           name="partner-arduino" />
 
   <project name="meta-partner-arduino"
-           revision="c4a5914887038487b5d006d0c2f92921e2792690"
+           revision="ae935300aa8584671a68f757108877ab5c3b4ff5"
            path="layers/meta-partner-arduino"
            remote="partner-arduino"/>
 
