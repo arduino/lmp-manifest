@@ -1,8 +1,14 @@
 Arduino Linux microPlatform Manifest
 ============================
 
-Instructions for local builds
------------------------------
+Instructions for local builds (Arduino)
+---------------------------------------
+
+Supported **MACHINE** targets (tested by Arduino):
+
+* portenta-x8 (Standard targets compatible with all carrier boards)
+* portenta-x8-ebbr (Arm SystemReady IR targets)
+* portenta-x8-preempt-rt (Preempt-rt patch targets) !!work in progress!!
 
 ```
 repo init -u https://github.com/arduino/lmp-manifest.git -m arduino.xml -b release
@@ -20,14 +26,17 @@ bitbake mfgtool-files
 
 alternatively you can build a devel image that for now doesn't have wayland support.
 This is currently or way to go for debugging kernel related issues and uses DISTRO lmp-base
-which doesn't include all the security features such as ostree, op-tee, sota that aren't needed
-in this scenario
+which doesn't include all the security features such as ostree, op-tee and sota that aren't
+strictly needed in this scenario
 
 ```
 DISTRO=lmp-base MACHINE=portenta-x8 . setup-environment
 echo "ACCEPT_FSL_EULA = \"1\"" >> conf/local.conf
 bitbake lmp-devel-arduino-image
 ```
+
+Instructions for local builds (Foundries.io)
+--------------------------------------------
 
 Foundries.io Linux microPlatform manifest.
 
