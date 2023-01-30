@@ -1,5 +1,33 @@
-Linux microPlatform Manifest
+Arduino Linux microPlatform Manifest
 ============================
+
+Instructions for local builds
+-----------------------------
+
+```
+repo init -u https://github.com/arduino/lmp-manifest.git -m arduino.xml -b release
+repo sync
+
+DISTRO=lmp-xwayland MACHINE=portenta-x8 . setup-environment
+echo "ACCEPT_FSL_EULA = \"1\"" >> conf/local.conf
+bitbake lmp-devel-arduino-image
+
+DISTRO=lmp-mfgtool MACHINE=portenta-x8 . setup-environment
+echo "ACCEPT_FSL_EULA = \"1\"" >> conf/local.conf
+echo "MFGTOOL_FLASH_IMAGE = \"lmp-devel-arduino-image\"" >> conf/local.conf
+bitbake mfgtool-files
+```
+
+alternatively you can build a devel image that for now doesn't have wayland support.
+This is currently or way to go for debugging kernel related issues and uses DISTRO lmp-base
+which doesn't include all the security features such as ostree, op-tee, sota that aren't needed
+in this scenario
+
+```
+DISTRO=lmp-base MACHINE=portenta-x8 . setup-environment
+echo "ACCEPT_FSL_EULA = \"1\"" >> conf/local.conf
+bitbake lmp-devel-arduino-image
+```
 
 Foundries.io Linux microPlatform manifest.
 
