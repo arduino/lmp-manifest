@@ -29,6 +29,13 @@ echo "ACCEPT_FSL_EULA = \"1\"" >> conf/local.conf
 bitbake lmp-devel-arduino-image
 ```
 
+**Note**: To reduce bitbake parallelism (because you may want to use your computer while performing an image build) edit `conf/local.conf`:
+```diff
++BB_NUMBER_PARSE_THREADS = "4"
++BB_NUMBER_THREADS = "4"
++PARALLEL_MAKE = "-j 4"
+```
+
 Foundries.io Linux microPlatform manifest.
 
 This directory contains a Repo manifest and setup scripts for the
