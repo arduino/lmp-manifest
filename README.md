@@ -8,7 +8,7 @@ Supported **MACHINE** targets (tested by Arduino):
 
 * portenta-x8 (Standard targets compatible with all carrier boards)
 * portenta-x8-ebbr (Arm SystemReady IR targets)
-* portenta-x8-preempt-rt (Preempt-rt patch targets) !!work in progress!!
+* portenta-x8-preempt-rt (Preempt-rt patch targets) !!_**work in progress**_!!
 
 ```
 repo init -u https://github.com/arduino/lmp-manifest.git -m arduino.xml -b release
@@ -25,7 +25,7 @@ bitbake mfgtool-files
 ```
 
 alternatively you can build a devel image that for now doesn't have wayland support.
-This is currently or way to go for debugging kernel related issues and uses DISTRO lmp-base
+This is currently our way to go for debugging kernel related issues and uses DISTRO lmp-base
 which doesn't include all the security features such as ostree, op-tee and sota that aren't
 strictly needed in this scenario
 
