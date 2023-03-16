@@ -1,16 +1,11 @@
 <manifest>
   <include name="default.xml" />
 
-  <remote fetch="https://source.foundries.io/factories/arduino"
+  <remote fetch="https://github.com/arduino"
           name="partner-arduino" />
 
   <project name="meta-partner-arduino"
            revision="next"
            path="layers/meta-partner-arduino"
-           remote="partner-arduino"/>
-
-  <project name="meta-subscriber-overrides"
-           revision="next"
-           path="layers/meta-subscriber-overrides"
            remote="partner-arduino"/>
 </manifest>
