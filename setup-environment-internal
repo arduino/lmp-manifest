@@ -143,7 +143,7 @@ export BB_ENV_PASSTHROUGH_ADDITIONS="MACHINE DISTRO TCLIBC TCMODE GIT_PROXY_COMM
 
 mkdir -p "${BUILDDIR}"/conf && cd "${BUILDDIR}"
 if [ -f "conf/auto.conf" ]; then
-    oldmach=$(egrep "^MACHINE" "conf/auto.conf" |
+    oldmach=$(grep -E "^MACHINE" "conf/auto.conf" |
              sed -e 's%^MACHINE ?= %%' | sed -e 's/^"//' -e 's/"$//')
 fi
 
@@ -247,10 +247,21 @@ ln -sf "${MANIFESTS}" "${OEROOT}"/layers/
 
 DISTRO_DIRNAME=$(echo "${DISTRO}" | sed 's#[.-]#_#g')
 
+if [ -z "$LMP_VERSION_CACHE" ]; then
+    LMP_VERSION_CACHE="$(git --git-dir ${MANIFESTS}/.git describe HEAD --tags --abbrev=0)"
+    if [ -v LMP_VERSION_CACHE_DEV ]; then
+        # to use the development version of the cache the user need to define the LMP_VERSION_CACHE_DEV env
+        LMP_VERSION_CACHE=$(( $LMP_VERSION_CACHE + 1 ))
+    fi
+fi
+
 cat > conf/auto.conf <<EOF
 DISTRO ?= "${DISTRO}"
 MACHINE ?= "${MACHINE}"
 SDKMACHINE ?= "${SDKMACHINE}"
+
+# Use public state cache mirror if no other is defined
+SSTATE_MIRRORS ??= "file://.* https://storage.googleapis.com/lmp-cache/v$LMP_VERSION_CACHE-sstate-cache/PATH"
 
 # Extra options that can be changed by the user
 INHERIT += "rm_work"

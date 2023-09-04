@@ -18,12 +18,12 @@ RUN git clone https://github.com/containers/skopeo.git /skopeo && \
 FROM ubuntu:20.04 AS fiotools
 RUN apt-get update
 RUN apt-get install -y wget git gcc make -y
-RUN wget -P /tmp https://go.dev/dl/go1.18.linux-amd64.tar.gz && \
-    tar -C /usr/local -xzf /tmp/go1.18.linux-amd64.tar.gz
+RUN wget -P /tmp https://go.dev/dl/go1.19.9.linux-amd64.tar.gz && \
+    tar -C /usr/local -xzf /tmp/go1.19.9.linux-amd64.tar.gz
 ENV PATH /usr/local/go/bin:$PATH
 
 RUN git clone https://github.com/foundriesio/ostreeuploader.git /ostreeuploader && \
-    cd /ostreeuploader && git checkout -q 2022.12 && \
+    cd /ostreeuploader && git checkout -q 2023.6 && \
     cd /ostreeuploader && make
 
 
@@ -50,13 +50,13 @@ RUN apt-get update \
 RUN apt-get update \
 	&& apt-get install -y --no-install-recommends \
 		android-sdk-libsparse-utils android-sdk-ext4-utils ca-certificates \
-		chrpath cpio diffstat file gawk g++ iproute2 iputils-ping less libmagickwand-dev \
+		chrpath cpio diffstat file gawk g++ iproute2 iputils-ping less libgcc1 libmagickwand-dev \
 		libmath-prime-util-perl libsdl1.2-dev libssl-dev locales \
 		openjdk-11-jre openssh-client perl-modules python3 python3-requests \
 		make patch repo sudo texinfo vim-tiny wget whiptail libelf-dev git-lfs screen \
 		socket corkscrew curl xz-utils tcl libtinfo5 device-tree-compiler python3-pip python3-dev \
 		tmux libncurses-dev vim zstd lz4 liblz4-tool libc6-dev-i386 \
-		awscli docker-compose \
+		awscli docker-compose gosu xvfb python3-cairo python3-gi-cairo yaru-theme-icon \
 	&& ln -s /usr/bin/python3 /usr/bin/python \
 	&& pip3 --no-cache-dir install expandvars jsonFormatter \
 	&& apt-get autoremove -y \
@@ -72,8 +72,14 @@ RUN useradd -c $DEV_USER_NAME \
 		-s /bin/bash \
 		$DEV_USER
 
+# Add entrypoint to run gosu
+COPY entrypoint /
+ENTRYPOINT ["/entrypoint"]
+
 # Add default password for the SDK user (useful with sudo)
-RUN echo $DEV_USER:$DEV_USER_PASSWD | chpasswd
+# and replace entrypoint with dev user name
+RUN echo $DEV_USER:$DEV_USER_PASSWD | chpasswd && \
+	sed "s/@@DOCKER_USER@@/$DEV_USER/g" -i /entrypoint
 
 # Initialize development environment for $DEV_USER.
 RUN sudo -u $DEV_USER -H git config --global credential.helper 'cache --timeout=3600'
