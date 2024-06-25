@@ -2,10 +2,10 @@
   <include name="default.xml" />
 
   <remote fetch="https://github.com/arduino"
-          name="partner-arduino" />
+    name="partner-arduino" />
 
   <project name="meta-partner-arduino"
-           revision="5a95204ad762285e117aa3a7e93fe9717bd3751b"
-           path="layers/meta-partner-arduino"
-           remote="partner-arduino"/>
+    revision="d26f0f70e8062ae0432ebb1eff91a6fce1129315"
+    path="layers/meta-partner-arduino"
+    remote="partner-arduino"/>
 </manifest>
