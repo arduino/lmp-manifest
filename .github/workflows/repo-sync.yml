@@ -1,0 +1,29 @@
+name: Sync with foundries repo
+on:
+  push:
+    branches:
+    - main
+    - development
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout source repository
+      uses: actions/checkout@v2
+    - name: Push to destination repository
+      run: |
+        git config --global user.email "github@arduino.cc"
+        git config --global user.name "arduino"
+        git config --global http.https://source.foundries.io/factories/arduino.extraheader "${FOUNDRIES_ACCESS_TOKEN}"
+        git clone ${REMOTE_REPO} destination
+        cd destination
+        git remote add github-repo ..
+        git remote update
+        git merge github-repo/${BRANCH_NAME}
+        git push origin ${BRANCH_NAME}
+      env:
+        FOUNDRIES_ACCESS_TOKEN: ${{ secrets.FOUNDRIES_ACCESS_TOKEN }}
+        REMOTE_REPO: https://source.foundries.io/factories/arduino/lmp-manifest.git
+        BRANCH_NAME: ${{ github.base_ref || github.ref_name }}
+
