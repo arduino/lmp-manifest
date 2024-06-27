@@ -19,9 +19,9 @@ jobs:
 
     - name: Checkout destination repository
       run: |
-        git config --global user.name arduino-github
-        git config --global user.email github@arduino.cc
-        git config --global http.https://source.foundries.io/factories/arduino.extraheader "${FOUNDRIES_ACCESS_TOKEN}"
+        git config user.name arduino-github
+        git config user.email github@arduino.cc
+        git config http.https://source.foundries.io/factories/arduino.extraheader "${FOUNDRIES_ACCESS_TOKEN}"
         git clone -b ${BRANCH_NAME} ${DESTINATION_REPOSITORY} dest-repo
       env:
         DESTINATION_REPOSITORY: https://source.foundries.io/factories/arduino/lmp-manifest.git
