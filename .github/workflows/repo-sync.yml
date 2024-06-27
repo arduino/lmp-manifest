@@ -17,7 +17,7 @@ jobs:
         fetch-depth: 0
 
     - name: Sync repos
-      uses: foundriesio/mirror-action@main
+      uses: foundriesio/mirror-action@master
       with:
         REMOTE: "https://source.foundries.io/factories/arduino/lmp-manifest.git"
         GIT_ACCESS_TOKEN: ${{  secrets.FOUNDRIES_ACCESS_TOKEN }}
