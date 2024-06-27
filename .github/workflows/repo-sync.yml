@@ -28,13 +28,10 @@ jobs:
     - name: Checkout destination repository
       uses: actions/checkout@v4
       with:
-        repository: ${REMOTE_REPO}
-        ref: ${BRANCH_NAME}
+        repository: https://source.foundries.io/factories/arduino/lmp-manifest.git
+        ref: ${{ github.base_ref || github.ref_name }}
         fetch-depth: 0
         path: dest-repo
-      env:
-        REMOTE_REPO: https://source.foundries.io/factories/arduino/lmp-manifest.git
-        BRANCH_NAME: ${{ github.base_ref || github.ref_name }}
 
     - name: Push changes
       run: |
