@@ -26,12 +26,11 @@ jobs:
         path: src-repo
 
     - name: Checkout destination repository
-      uses: actions/checkout@v4
-      with:
-        repository: https://source.foundries.io/factories/arduino/lmp-manifest.git
-        ref: ${{ github.base_ref || github.ref_name }}
-        fetch-depth: 0
-        path: dest-repo
+      run: |
+        git clone -b ${BRANCH_NAME} ${DESTINATION_REPOSITORY} dest-repo
+      ENV:
+        DESTINATION_REPOSITORY: https://source.foundries.io/factories/arduino/lmp-manifest.git
+        BRANCH_NAME: ${{ github.base_ref || github.ref_name }}
 
     - name: Push changes
       run: |
