@@ -28,7 +28,7 @@ jobs:
     - name: Checkout destination repository
       run: |
         git clone -b ${BRANCH_NAME} ${DESTINATION_REPOSITORY} dest-repo
-      ENV:
+      env:
         DESTINATION_REPOSITORY: https://source.foundries.io/factories/arduino/lmp-manifest.git
         BRANCH_NAME: ${{ github.base_ref || github.ref_name }}
 
