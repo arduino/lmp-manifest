@@ -10,19 +10,36 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
+
     - name: Set foundries token
       run: |
-        echo "TOKEN: ${FOUNDRIES_ACCESS_TOKEN} debug"
+        git config --global user.name arduino-github
+        git config --global user.email github@arduino.cc
         git config --global http.https://source.foundries.io/factories/arduino.extraheader "${FOUNDRIES_ACCESS_TOKEN}"
       env:
         FOUNDRIES_ACCESS_TOKEN: ${{ secrets.FOUNDRIES_ACCESS_TOKEN }}
+
     - name: Checkout source repository
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
         path: src-repo
+
+    - name: Checkout destination repository
+      uses: actions/checkout@v4
+      with:
+        repository: ${REMOTE_REPO}
+        ref: ${BRANCH_NAME}
+        fetch-depth: 0
+        path: dest-repo
       env:
-        FOUNDRIES_ACCESS_TOKEN: ${{ secrets.FOUNDRIES_ACCESS_TOKEN }}
         REMOTE_REPO: https://source.foundries.io/factories/arduino/lmp-manifest.git
         BRANCH_NAME: ${{ github.base_ref || github.ref_name }}
 
+    - name: Push changes
+      run: |
+        cd dest-repo
+        echo "DEbug: branch $(git branch) selected"
+          echo "Branch variable is: ${BRANCH_NAME}"
+      env:
+        BRANCH_NAME: ${{ github.base_ref || github.ref_name }}
