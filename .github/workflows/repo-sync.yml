@@ -18,12 +18,6 @@ jobs:
       with:
         fetch-depth: 0
         path: src-repo
-        git clone ${REMOTE_REPO} destination
-        cd destination
-        git remote add github-repo ..
-        git remote update
-        git merge github-repo/${BRANCH_NAME}
-        git push origin ${BRANCH_NAME}
       env:
         FOUNDRIES_ACCESS_TOKEN: ${{ secrets.FOUNDRIES_ACCESS_TOKEN }}
         REMOTE_REPO: https://source.foundries.io/factories/arduino/lmp-manifest.git
