@@ -9,13 +9,15 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout source repository
-      uses: actions/checkout@v2
-    - name: Push to destination repository
+    - name: Set foundries token
       run: |
-        git config --global user.email "github@arduino.cc"
-        git config --global user.name "arduino"
+        echo "TOKEN: ${FOUNDRIES_ACCESS_TOKEN} debug"
         git config --global http.https://source.foundries.io/factories/arduino.extraheader "${FOUNDRIES_ACCESS_TOKEN}"
+    - name: Checkout source repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        path: src-repo
         git clone ${REMOTE_REPO} destination
         cd destination
         git remote add github-repo ..
