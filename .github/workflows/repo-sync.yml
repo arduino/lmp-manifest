@@ -3,7 +3,8 @@ on:
   push:
     branches:
     - main
-    - development
+    - devel
+    - next
 
 jobs:
   sync:
