@@ -1,4 +1,4 @@
-# Arduino Linux microPlatform Manifest
+Arduino Linux microPlatform Manifest
 ============================
 
 Instructions for local builds (Arduino)
