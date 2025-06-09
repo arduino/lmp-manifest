@@ -1,0 +1,53 @@
+on:
+  workflow_call:
+    inputs:
+      target-version:
+        description: "Target version"
+        type: string
+      board:
+        description: "Board name"
+        type: string
+        default: 'portentax8'
+      environment:
+        description: "Environment name"
+        type: string
+        default: 'production'
+      slack-message:
+        description: "Slack message text"
+        type: string
+permissions:
+  contents: read       # Required to checkout repository.
+  id-token: write     # Required to access OIDC token.
+jobs:
+  Promote:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Authenticate AWS
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-region: 'us-east-1'
+        role-to-assume: ${{ secrets.AWS_IAM_ROLE }}
+        role-session-name: GHA_FoundriesPromote_via_FederatedOIDC
+        mask-aws-account-id: true
+
+    - name: Promote pre-release ${{ inputs.target-version }} to release
+      run: |
+        aws s3 cp s3://${{ secrets.S3_BUCKET }}/$PREFIX/offline-update-$TARGET.tar.gz s3://${{ secrets.S3_BUCKET }}/$PREFIX/update-latest.tar.gz
+        aws s3 cp s3://${{ secrets.S3_BUCKET }}/$PREFIX/$TARGET.tar.gz s3://${{ secrets.S3_BUCKET }}/$PREFIX/image-latest.tar.gz
+        aws s3 cp s3://${{ secrets.S3_BUCKET }}/$PREFIX/info-pre.json s3://${{ secrets.S3_BUCKET }}/$PREFIX/info.json
+      env:
+        TARGET: ${{ inputs.target-version }}
+        PREFIX: ${{ inputs.board}}image
+
+    - name: Send message to Slack
+      uses: archive/github-actions-slack@v2.0.0
+      id: notify
+      with:
+        slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
+        slack-channel: ${{ secrets.SLACK_CHANNEL }}
+        slack-text: ${{ inputs.slack-message }}
+        slack-optional-icon_emoji: ":fire:"
