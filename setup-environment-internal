@@ -35,7 +35,7 @@ if [ "$(whoami)" = "root" ]; then
     return
 fi
 
-OEROOT=$(pwd)
+OEROOT=$(readlink -f $(pwd))
 cd "$OEROOT"
 if [ -n "$ZSH_VERSION" ]; then
     setopt sh_word_split
@@ -147,7 +147,7 @@ if [ -f "conf/auto.conf" ]; then
              sed -e 's%^MACHINE ?= %%' | sed -e 's/^"//' -e 's/"$//')
 fi
 
-if [ -e conf/checksum -a "${MACHINE}" = "$oldmach" ]; then
+if [ -e conf/checksum ] && [ "${MACHINE}" = "$oldmach" ]; then
     sha512sum --quiet -c conf/checksum > /dev/null 2>&1
     if [ $? -eq 0 ]; then
        return
@@ -164,27 +164,27 @@ fi
 # Copy default development keys if not set by the user
 if [ -d "${MANIFESTS}"/conf/keys ]; then
     mkdir -p conf/keys
-    if [ ! -f "conf/keys/dev.key" -a ! -f "conf/keys/dev.crt" ]; then
+    if [ ! -f "conf/keys/dev.key" ] && [ ! -f "conf/keys/dev.crt" ]; then
         ln -sf "${MANIFESTS}"/conf/keys/dev.key conf/keys/dev.key
         ln -sf "${MANIFESTS}"/conf/keys/dev.crt conf/keys/dev.crt
     fi
     # Copy default SPL development keys if not set by the user
-    if [ ! -f "conf/keys/spldev.key" -a ! -f "conf/keys/spldev.crt" ]; then
+    if [ ! -f "conf/keys/spldev.key" ] && [ ! -f "conf/keys/spldev.crt" ]; then
         ln -sf "${MANIFESTS}"/conf/keys/spldev.key conf/keys/spldev.key
         ln -sf "${MANIFESTS}"/conf/keys/spldev.crt conf/keys/spldev.crt
     fi
     # Copy default u-boot development keys if not set by the user
-    if [ ! -f "conf/keys/ubootdev.key" -a ! -f "conf/keys/ubootdev.crt" ]; then
+    if [ ! -f "conf/keys/ubootdev.key" ] && [ ! -f "conf/keys/ubootdev.crt" ]; then
         ln -sf "${MANIFESTS}"/conf/keys/ubootdev.key conf/keys/ubootdev.key
         ln -sf "${MANIFESTS}"/conf/keys/ubootdev.crt conf/keys/ubootdev.crt
     fi
     # Copy default optee development keys if not set by the user
-    if [ ! -f "conf/keys/opteedev.key" -a ! -f "conf/keys/opteedev.crt" ]; then
+    if [ ! -f "conf/keys/opteedev.key" ] && [ ! -f "conf/keys/opteedev.crt" ]; then
         ln -sf "${MANIFESTS}"/conf/keys/opteedev.key conf/keys/opteedev.key
         ln -sf "${MANIFESTS}"/conf/keys/opteedev.crt conf/keys/opteedev.crt
     fi
     # Copy default module kernel development keys if not set by the user
-    if [ ! -f "conf/keys/privkey_modsign.pem" -a ! -f "conf/keys/x509_modsign.crt" ]; then
+    if [ ! -f "conf/keys/privkey_modsign.pem" ] && [ ! -f "conf/keys/x509_modsign.crt" ]; then
         ln -sf "${MANIFESTS}"/conf/keys/privkey_modsign.pem conf/keys/privkey_modsign.pem
         ln -sf "${MANIFESTS}"/conf/keys/x509_modsign.crt conf/keys/x509_modsign.crt
     fi
@@ -196,45 +196,57 @@ if [ -d "${MANIFESTS}"/conf/keys ]; then
     if [ ! -d "conf/keys/uefi" ]; then
         ln -sf "${MANIFESTS}"/conf/keys/uefi conf/keys/uefi
     fi
+    # Link default TI K3 RoT keys if not set by the user
+    if [ ! -d "conf/keys/platform" ]; then
+        ln -sf "${MANIFESTS}"/conf/keys/platform conf/keys/platform
+    fi
+    # Link Composefs keys
+    if [ ! -d "conf/keys/cfs" ]; then
+        ln -sf "${MANIFESTS}"/conf/keys/cfs conf/keys/cfs
+    fi
 fi
 
 # Factory specific keys (unique per factory)
 if [ -d "${MANIFESTS}"/factory-keys ]; then
     mkdir -p conf/factory-keys
     # Copy default factory SPL development keys if not set by the user
-    if [ ! -f "conf/factory-keys/spldev.key" -a ! -f "conf/factory-keys/spldev.crt" ]; then
+    if [ ! -f "conf/factory-keys/spldev.key" ] && [ ! -f "conf/factory-keys/spldev.crt" ]; then
         ln -sf "${MANIFESTS}"/factory-keys/spldev.key conf/factory-keys/spldev.key
         ln -sf "${MANIFESTS}"/factory-keys/spldev.crt conf/factory-keys/spldev.crt
     fi
     # Copy default factory u-boot development keys if not set by the user
-    if [ ! -f "conf/factory-keys/ubootdev.key" -a ! -f "conf/factory-keys/ubootdev.crt" ]; then
+    if [ ! -f "conf/factory-keys/ubootdev.key" ] && [ ! -f "conf/factory-keys/ubootdev.crt" ]; then
         ln -sf "${MANIFESTS}"/factory-keys/ubootdev.key conf/factory-keys/ubootdev.key
         ln -sf "${MANIFESTS}"/factory-keys/ubootdev.crt conf/factory-keys/ubootdev.crt
     fi
     # Copy default factory optee development keys if not set by the user
-    if [ ! -f "conf/factory-keys/opteedev.key" -a ! -f "conf/factory-keys/opteedev.crt" ]; then
+    if [ ! -f "conf/factory-keys/opteedev.key" ] && [ ! -f "conf/factory-keys/opteedev.crt" ]; then
         ln -sf "${MANIFESTS}"/factory-keys/opteedev.key conf/factory-keys/opteedev.key
         ln -sf "${MANIFESTS}"/factory-keys/opteedev.crt conf/factory-keys/opteedev.crt
     fi
     # Copy default factory module kernel development keys if not set by the user
-    if [ ! -f "conf/factory-keys/privkey_modsign.pem" -a ! -f "conf/factory-keys/x509_modsign.crt" ]; then
+    if [ ! -f "conf/factory-keys/privkey_modsign.pem" ] && [ ! -f "conf/factory-keys/x509_modsign.crt" ]; then
         ln -sf "${MANIFESTS}"/factory-keys/privkey_modsign.pem conf/factory-keys/privkey_modsign.pem
         ln -sf "${MANIFESTS}"/factory-keys/x509_modsign.crt conf/factory-keys/x509_modsign.crt
     fi
     # Link custom TF-A development keys set by the user
-    if [ -d "${MANIFESTS}"/factory-keys/tf-a -a ! -d "conf/factory-keys/tf-a" ]; then
+    if [ -d "${MANIFESTS}"/factory-keys/tf-a ] && [ ! -d "conf/factory-keys/tf-a" ]; then
         ln -sf "${MANIFESTS}"/factory-keys/tf-a conf/factory-keys/tf-a
     fi
     # Link custom UEFI development keys and certificates set by the user
-    if [ -d "${MANIFESTS}"/factory-keys/uefi -a ! -d "conf/factory-keys/uefi" ]; then
+    if [ -d "${MANIFESTS}"/factory-keys/uefi ] && [ ! -d "conf/factory-keys/uefi" ]; then
         ln -sf "${MANIFESTS}"/factory-keys/uefi conf/factory-keys/uefi
+    fi
+    # Link default TI K3 RoT keys if not set by the user
+    if [ -d "${MANIFESTS}"/factory-keys/platform ] && [ ! -d "conf/factory-keys/platform" ]; then
+        ln -sf "${MANIFESTS}"/factory-keys/platform conf/factory-keys/platform
+    fi
+    # Link Composefs keys if not set by the user
+    if [ -d "${MANIFESTS}"/factory-keys/cfs ] && [ ! -d "conf/factory-keys/cfs" ]; then
+        ln -sf "${MANIFESTS}"/factory-keys/cfs conf/factory-keys/cfs
     fi
 fi
 
-# Link default iMX HAB4 development keys and certificate if not set by the user
-if [ ! -e "conf/keys/imx_hab4" ]; then
-    ln -sf ${OEROOT}/tools/lmp-tools/security/imx_hab4 conf/keys/imx_hab4
-fi
 ln -sf "${MANIFESTS}"/conf/bblayers.conf conf/bblayers.conf
 ln -sf "${MANIFESTS}"/conf/bblayers-base.inc conf/bblayers-base.inc
 ln -sf "${MANIFESTS}"/conf/bblayers-bsp.inc conf/bblayers-bsp.inc
@@ -250,12 +262,35 @@ ln -sf "${MANIFESTS}" "${OEROOT}"/layers/
 
 DISTRO_DIRNAME=$(echo "${DISTRO}" | sed 's#[.-]#_#g')
 
+LMP_TAG="$(git --git-dir ${MANIFESTS}/.git describe HEAD --tags --abbrev=0)"
+# We want to truncate the value and still use the major version cache
+# (e.g. for 94.1 use 94. The .1 part of the sstate cache is
+# actually in the 95 bucket. 94.1 is small enough so this doesn't matter).
+# If we ever have a minor release that causes sufficient cache
+# invalidation, then we'll need to re-think how to produce the cache better.
+LMP_TAG="$(echo $LMP_TAG | sed 's/\.[0-9]*$//')"
+
+if [[ ! $LMP_TAG =~ ^[[:digit:]] ]]; then
+    LMP_TAG_ARR=(${LMP_TAG//-/ })
+    LMP_PARTNER_NAME="${LMP_TAG_ARR[0]}"
+    LMP_VERSION_CACHE_TMP="${LMP_TAG_ARR[1]}"
+else
+    LMP_VERSION_CACHE_TMP="${LMP_TAG}"
+fi
+
 if [ -z "$LMP_VERSION_CACHE" ]; then
-    LMP_VERSION_CACHE="$(git --git-dir ${MANIFESTS}/.git describe HEAD --tags --abbrev=0)"
+    LMP_VERSION_CACHE="${LMP_VERSION_CACHE_TMP}"
+
     if [ -v LMP_VERSION_CACHE_DEV ]; then
         # to use the development version of the cache the user need to define the LMP_VERSION_CACHE_DEV env
         LMP_VERSION_CACHE=$(( $LMP_VERSION_CACHE + 1 ))
     fi
+fi
+
+if [[ ! -z "$LMP_PARTNER_NAME" ]]; then
+    SSTATE_MIRRORS="file://.* https://storage.googleapis.com/lmp-cache/$LMP_PARTNER_NAME/v$LMP_VERSION_CACHE-sstate-cache/PATH"
+else
+    SSTATE_MIRRORS="file://.* https://storage.googleapis.com/lmp-cache/v$LMP_VERSION_CACHE-sstate-cache/PATH"
 fi
 
 cat > conf/auto.conf <<EOF
@@ -264,7 +299,7 @@ MACHINE ?= "${MACHINE}"
 SDKMACHINE ?= "${SDKMACHINE}"
 
 # Use public state cache mirror if no other is defined
-SSTATE_MIRRORS ??= "file://.* https://storage.googleapis.com/lmp-cache/v$LMP_VERSION_CACHE-sstate-cache/PATH"
+SSTATE_MIRRORS ??= "$SSTATE_MIRRORS"
 
 # Extra options that can be changed by the user
 INHERIT += "rm_work"
@@ -272,6 +307,15 @@ INHERIT += "buildstats buildstats-summary"
 INHERIT += "buildhistory"
 BUILDHISTORY_COMMIT = "1"
 EOF
+
+# LMP_VERSION_CACHE was required in some other places on CI so
+# we need to proper check for the existence of LMP_VERSION,
+# which is only available on CI, to safely remove the LMP_VERSION_CACHE
+# on local builds
+if [ ! -v LMP_VERSION ]; then
+    # we don't need this anymore
+    unset LMP_VERSION_CACHE
+fi
 
 if [ ! -e conf/site.conf ]; then
     cat > conf/site.conf <<_EOF
