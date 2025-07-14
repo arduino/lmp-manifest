@@ -1,0 +1,121 @@
+on:
+  workflow_call:
+    inputs:
+      factory:
+        description: "Factory name"
+        type: string
+        default: 'arduino'
+      branch:
+        description: "Branch name"
+        type: string
+        default: 'main'
+      target-version:
+        description: "Target version"
+        type: string
+      board:
+        description: "Board name"
+        type: string
+        default: 'portentax8'
+      environment:
+        description: "Environment name"
+        type: string
+        default: 'production'
+      artifacts:
+        description: "A comma-separated list of artifact names"
+        type: string
+      slack-message:
+        description: "Slack message text"
+        type: string
+permissions:
+  contents: read       # Required to checkout repository.
+  id-token: write     # Required to access OIDC token.
+env:
+  DOMAIN: '{"staging": "oniudra", "production": "arduino"}'
+  BOARDS: '{"portentax8": "portenta-x8"}'
+jobs:
+  Deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Install Fioctl
+      run: |
+        curl -o /usr/local/bin/fioctl -LO https://github.com/foundriesio/fioctl/releases/download/v0.44/fioctl-linux-amd64
+        chmod +x /usr/local/bin/fioctl
+
+    - name: Configure Login to FoundriesFactory
+      run: |
+        printf "clientcredentials:\n  client_id: %s\n  client_secret: %s" "${{ secrets.FOUNDRIES_CLIENT_ID }}" "${{ secrets.FOUNDRIES_CLIENT_SECRET }}" > $HOME/.config/fioctl.yaml
+
+    - name: Download Offline Update and TUF root keys
+      id: download-offline-update
+      run: |
+        fioctl targets offline-update ${{ fromJSON(env.BOARDS)[inputs.board] }}-lmp-$TARGET offline-updates --tag $BRANCH --factory $FACTORY
+        curl -H "osf-token: ${{ secrets.FOUNDRIES_TOKEN }}" "https://api.foundries.io/ota/repo/$FACTORY/api/v1/user_repo/1.root.json" > offline-updates/tuf/1.root.json
+        curl -H "osf-token: ${{ secrets.FOUNDRIES_TOKEN }}" "https://api.foundries.io/ota/repo/$FACTORY/api/v1/user_repo/2.root.json" > offline-updates/tuf/2.root.json
+        tar zcf offline-update-$TARGET.tar.gz offline-updates
+        MD5SUM=($(md5sum offline-update-$TARGET.tar.gz))
+        echo "md5sum=$MD5SUM" >> $GITHUB_OUTPUT
+      env:
+        TARGET: ${{ inputs.target-version }}
+        BRANCH: ${{ inputs.branch }}
+        FACTORY: ${{ inputs.factory }}
+
+    - name: Authenticate AWS
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-region: 'us-east-1'
+        role-to-assume: ${{ secrets.AWS_IAM_ROLE }}
+        role-session-name: GHA_FoundriesRelease_via_FederatedOIDC
+        mask-aws-account-id: true
+
+    - name: Get info.json
+      run: |
+        aws s3 cp s3://${{ secrets.S3_BUCKET }}/$PREFIX/info.json .
+      env:
+        PREFIX: ${{ inputs.board}}image
+
+    - name: Update info.json
+      run: |
+        jq --arg target "$TARGET" '.latest.version |= $target' info.json > info.json.tmp && mv info.json.tmp info.json
+        jq --arg url "$URL" '.latest.url |= $url' info.json > info.json.tmp && mv info.json.tmp info.json
+        jq --arg md5sum "$MD5SUM" '.latest.md5sum |= $md5sum' info.json > info.json.tmp && mv info.json.tmp info.json
+      env:
+        TARGET: ${{ inputs.target-version }}
+        URL: https://downloads.${{ fromJSON(env.DOMAIN)[inputs.environment] }}.cc/${{ inputs.board}}image/offline-update-${{ inputs.target-version }}.tar.gz
+        MD5SUM: ${{ steps.download-offline-update.outputs.md5sum }}
+
+    - name: Download artifacts
+      run: |
+        [ ! -d ${TARGET} ] && mkdir ${TARGET}
+        cd ${TARGET}
+        for ARTIFACT in $(echo ${{ inputs.artifacts }} | tr ',' '\n')
+        do
+            echo ${BASE_URL}/${ARTIFACT}
+            curl -H "OSF-TOKEN: ${{ secrets.FOUNDRIES_TOKEN }}" -fLO ${BASE_URL}/${ARTIFACT}
+        done
+        cd ../
+        tar zcvf $TARGET.tar.gz $TARGET
+      env:
+        TARGET:  ${{ inputs.target-version }}
+        BASE_URL: https://ci.foundries.io/projects/${{ inputs.factory }}/lmp/builds/${{ inputs.target-version }}
+
+    - name: Upload "pre-release" artifacts
+      run: |
+        aws s3 cp info.json s3://${{ secrets.S3_BUCKET }}/$PREFIX/info-pre.json
+        aws s3 cp offline-update-$TARGET.tar.gz s3://${{ secrets.S3_BUCKET }}/$PREFIX/
+        aws s3 cp $TARGET.tar.gz s3://${{ secrets.S3_BUCKET }}/$PREFIX/
+      env:
+        TARGET: ${{ inputs.target-version }}
+        PREFIX: ${{ inputs.board}}image
+
+    - name: Send message to Slack
+      uses: archive/github-actions-slack@v2.0.0
+      id: notify
+      with:
+        slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
+        slack-channel: ${{ secrets.SLACK_CHANNEL }}
+        slack-text: ${{ inputs.slack-message }}
+        slack-optional-icon_emoji: ":bookmark:"
