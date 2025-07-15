@@ -4,15 +4,24 @@ on:
   workflow_dispatch:
     inputs:
       target-version:
-        description: 'Target version to promote'
-        required: true
+        description: 'Target version to promote (default: latest)'
         type: string
+        required: false
 
 jobs:
+  GetVersions:
+    uses: ./.github/workflows/foundries-target.yml
+    with:
+      factory: arduino
+      branch: main
+      environment: staging
+    secrets: inherit
+
   Promote:
+    needs: GetVersions
     uses: ./.github/workflows/foundries-promote.yml
     with:
-      target-version: ${{ inputs.target-version }}
       environment: staging
-      slack-message: "Foundries Factory Target version ${{ inputs.target-version }} has been promoted to production"
+      target-version: ${{ inputs.target-version ||needs.GetVersions.outputs.bucket-version }}
+      slack-message: "Portenta X8 target pre-release version ${{ needs.GetVersions.outputs.bucket-version }} has been promoted to production"
     secrets: inherit
