@@ -13,6 +13,5 @@ jobs:
     uses: ./.github/workflows/foundries-promote.yml
     with:
       target-version: ${{ inputs.target-version }}
-      environment: staging
       slack-message: "Foundries Factory Target version ${{ inputs.target-version }} has been promoted to production"
     secrets: inherit
