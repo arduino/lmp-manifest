@@ -38,6 +38,7 @@ jobs:
             'https://api.foundries.io/ota/factories/${{ inputs.factory }}/targets/' \
             | jq -r '.[] | .custom | select(has("tags")) | select(.tags | any(. == "main")) | .version' \
             | sort | tail -1)
+            [[ -z $TARGET ]] && echo "Token not valid" && exit 1
             echo "target-version=$TARGET" >> $GITHUB_OUTPUT
   GetDeployedVersion:
     runs-on: 'ubuntu-latest'
