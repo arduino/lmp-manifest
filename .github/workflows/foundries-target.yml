@@ -22,24 +22,44 @@ on:
         value: ${{ jobs.GetDeployedVersion.outputs.bucket-version }}
 permissions:
   contents: read
-env:
-  DOMAIN: '{"staging": "oniudra", "production": "arduino"}'
 jobs:
   GetTargetVersion:
     runs-on: 'ubuntu-latest'
     outputs:
       target-version: ${{ steps.fetch-targets.outputs.target-version }}
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Fioctl
+        run: |
+          curl -o /usr/local/bin/fioctl -LO https://github.com/foundriesio/fioctl/releases/download/v0.44/fioctl-linux-amd64
+          chmod +x /usr/local/bin/fioctl
+
+      - name: Configure Login to FoundriesFactory
+        run: |
+          printf "clientcredentials:\n  client_id: %s\n  client_secret: %s" "${{ secrets.FOUNDRIES_CLIENT_ID }}" "${{ secrets.FOUNDRIES_CLIENT_SECRET }}" > $HOME/.config/fioctl.yaml
+
       - name: Fetch Latest Target
         id: fetch-targets
         run: |
-          TARGET=$(curl -H "osf-token: ${{ secrets.FOUNDRIES_TOKEN }}" \
+          TARGETS=$(curl -H "osf-token: ${{ secrets.FOUNDRIES_TOKEN }}" \
             -H 'accept: application/json' \
-            'https://api.foundries.io/ota/factories/${{ inputs.factory }}/targets/' \
-            | jq -r '.[] | .custom | select(has("tags")) | select(.tags | any(. == "main")) | .version' \
-            | sort | tail -1)
-            [[ -z $TARGET ]] && echo "Token not valid" && exit 1
-            echo "target-version=$TARGET" >> $GITHUB_OUTPUT
+            'https://api.foundries.io/ota/factories/${{ inputs.factory }}/targets/')
+          [[ -z $TARGETS ]] && echo "Token not valid" && exit 1
+
+          echo $TARGETS | jq -r '.[] | .custom | select(has("tags")) | select(.tags | any(. == "main")) | "\(.version) \(."lmp-manifest-sha")"' | sort -r | while read TARGET SHA
+          do
+            if [[ -n $(git tag --points-at $SHA | grep arduino-) ]]; then
+              echo "Found release target version: $TARGET"
+              echo "target-version=$TARGET" >> $GITHUB_OUTPUT
+              found=1
+              break
+            fi
+          done
+
   GetDeployedVersion:
     runs-on: 'ubuntu-latest'
     environment: ${{ inputs.environment }}
@@ -49,4 +69,8 @@ jobs:
       - name: Get info-pre.json
         id: get-info-pre-json
         run: |
-          echo "latest-version=$(curl https://downloads.${{ fromJSON(env.DOMAIN)[inputs.environment] }}.cc/portentax8image/info-pre.json | jq -r '.latest.version')" >> $GITHUB_OUTPUT
+          LATEST_VERSION=$(curl https://downloads.${{ fromJSON(env.DOMAIN)[inputs.environment] }}.cc/portentax8image/info-pre.json | jq -r '.latest.version')
+          echo "Latest published target version: $LATEST_VERSION"
+          echo "latest-version=$LATEST_VERSION" >> $GITHUB_OUTPUT
+    env:
+      DOMAIN: '{"staging": "oniudra", "production": "arduino"}'
