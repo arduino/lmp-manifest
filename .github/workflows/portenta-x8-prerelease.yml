@@ -17,7 +17,7 @@ jobs:
   UploadPreRelease:
     needs: [GetVersions]
     uses: ./.github/workflows/foundries-prerelease.yml
-    if: ${{ needs.GetVersions.outputs.factory-version  > needs.GetVersions.outputs.bucket-version }}
+    if: ${{ needs.GetVersions.outputs.factory-version != needs.GetVersions.outputs.bucket-version }}
     with:
       factory: arduino
       branch: main
