@@ -14,14 +14,12 @@ jobs:
     with:
       factory: arduino
       branch: main
-      environment: staging
     secrets: inherit
 
   Promote:
     needs: GetVersions
     uses: ./.github/workflows/foundries-promote.yml
     with:
-      environment: staging
       target-version: ${{ inputs.target-version || needs.GetVersions.outputs.bucket-version }}
       slack-message: "Portenta X8 target pre-release version ${{ needs.GetVersions.outputs.bucket-version }} has been promoted to production"
     secrets: inherit

@@ -11,7 +11,6 @@ jobs:
     with:
       factory: arduino
       branch: main
-      environment: staging
     secrets: inherit
 
   UploadPreRelease:
@@ -24,5 +23,4 @@ jobs:
       target-version: ${{ needs.GetVersions.outputs.factory-version }}
       artifacts: "portenta-x8-mfgtools/artifacts/mfgtool-files-portenta-x8.tar.gz,portenta-x8/artifacts/imx-boot-portenta-x8,portenta-x8/artifacts/u-boot-portenta-x8.itb,portenta-x8/artifacts/sit-portenta-x8.bin,assemble-system-image/artifacts/main/lmp-factory-image-portenta-x8.wic.gz"
       slack-message: Portenta X8 target version ${{ needs.GetVersions.outputs.factory-version }} is available for testing
-      environment: staging
     secrets: inherit
