@@ -49,6 +49,15 @@ jobs:
       run: |
         printf "clientcredentials:\n  client_id: %s\n  client_secret: %s" "${{ secrets.FOUNDRIES_CLIENT_ID }}" "${{ secrets.FOUNDRIES_CLIENT_SECRET }}" > $HOME/.config/fioctl.yaml
 
+    - name: Get commit reason
+      id: get-reason
+      run: |
+        REASON=$(fioctl http get https://api.foundries.io/projects/$FACTORY/lmp/builds/$TARGET/ | jq -r '.data.build.reason' | tail -n +7)
+        echo "text=$REASON" >> $GITHUB_OUTPUT
+      env:
+        TARGET: ${{ inputs.target-version }}
+        FACTORY: ${{ inputs.factory }}
+
     - name: Download Offline Update and TUF root keys
       id: download-offline-update
       run: |
@@ -82,10 +91,12 @@ jobs:
         jq --arg target "$TARGET" '.latest.version |= $target' info.json > info.json.tmp && mv info.json.tmp info.json
         jq --arg url "$URL" '.latest.url |= $url' info.json > info.json.tmp && mv info.json.tmp info.json
         jq --arg md5sum "$MD5SUM" '.latest.md5sum |= $md5sum' info.json > info.json.tmp && mv info.json.tmp info.json
+        jq --arg changelog "$CHANGELOG" '.latest.changelog |= $changelog' info.json > info.json.tmp && mv info.json.tmp info.json
       env:
         TARGET: ${{ inputs.target-version }}
         URL: https://downloads.${{ fromJSON(env.DOMAIN)[inputs.environment] }}.cc/${{ inputs.board}}image/offline-update-${{ inputs.target-version }}.tar.gz
         MD5SUM: ${{ steps.download-offline-update.outputs.md5sum }}
+        CHANGELOG: ${{ steps.get-reason.outputs.text }}
 
     - name: Download artifacts
       run: |
@@ -117,5 +128,5 @@ jobs:
       with:
         slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
         slack-channel: ${{ secrets.SLACK_CHANNEL }}
-        slack-text: ${{ inputs.slack-message }}
+        slack-text: "${{ inputs.slack-message }}:\n${{ steps.get-reason.outputs.text }}"
         slack-optional-icon_emoji: ":bookmark:"
