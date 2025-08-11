@@ -41,6 +41,7 @@ jobs:
         aws s3 cp s3://${{ secrets.S3_BUCKET }}/$PREFIX/offline-update-$TARGET.tar.gz s3://${{ secrets.S3_BUCKET }}/$PREFIX/update-latest.tar.gz
         aws s3 cp s3://${{ secrets.S3_BUCKET }}/$PREFIX/$TARGET.tar.gz s3://${{ secrets.S3_BUCKET }}/$PREFIX/image-latest.tar.gz
         aws s3 cp s3://${{ secrets.S3_BUCKET }}/$PREFIX/info-pre.json s3://${{ secrets.S3_BUCKET }}/$PREFIX/info.json
+        sleep 60
       env:
         TARGET: ${{ inputs.target-version }}
         PREFIX: ${{ inputs.board }}image
