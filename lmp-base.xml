@@ -9,11 +9,11 @@
   <project name="lmp-tools" path="tools/lmp-tools" remote="fio">
     <linkfile dest="setup-environment" src="setup-environment"/>
   </project>
-  <project name="meta-lmp" path="layers/meta-lmp" remote="fio" revision="78707d1482746507d177b70fa548db50076879dc"/>
+  <project name="meta-lmp" path="layers/meta-lmp" remote="fio" revision="aa75703d6c459ae57b35882057e21ecf8a78f69d"/>
   <project name="meta-clang" path="layers/meta-clang" revision="eaa08939eaec9f620b14742ff3ac568553683034"/>
   <project name="meta-openembedded" path="layers/meta-openembedded" revision="491671faee11ea131feab5a3a451d1a01deb2ab1"/>
   <project name="meta-security" path="layers/meta-security" revision="bc865c5276c2ab4031229916e8d7c20148dfbac3"/>
   <project name="meta-updater" path="layers/meta-updater" revision="d57b19f885fe11916c91569e20288581eff512aa"/>
   <project name="meta-virtualization" path="layers/meta-virtualization" revision="9e040ee8dd6025558ea60ac9db60c41bfeddf221"/>
-  <project name="openembedded-core" path="layers/openembedded-core" revision="b214cc84a922f7a3fb7ebbc501189ce25e8bd2bd"/>
+  <project name="openembedded-core" path="layers/openembedded-core" revision="d5342ffc570d47a723b18297d75bd2f63c2088db"/>
 </manifest>
