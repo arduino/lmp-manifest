@@ -1,11 +1,11 @@
 <manifest>
   <include name="default.xml" />
 
-  <remote fetch="https://github.com/arduino"
+  <remote fetch="https://github.com/MaxPayne86Arduino"
     name="partner-arduino" />
 
-  <project name="meta-partner-arduino"
-    revision="7ba760a25d4a27b2fe9e2ab33284e7415c013f50"
-    path="layers/meta-partner-arduino"
+  <project name="meta-arduino"
+    revision="scarthgap"
+    path="layers/meta-arduino"
     remote="partner-arduino"/>
 </manifest>
