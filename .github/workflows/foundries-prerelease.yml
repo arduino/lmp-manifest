@@ -53,7 +53,10 @@ jobs:
       id: get-reason
       run: |
         REASON=$(fioctl http get https://api.foundries.io/projects/$FACTORY/lmp/builds/$TARGET/ | jq -r '.data.build.reason' | tail -n +7)
-        echo "text=$REASON" >> $GITHUB_OUTPUT
+        # Use a delimiter (EOF) to wrap the multi-line/spaced string
+        echo "text<<EOF" >> $GITHUB_OUTPUT
+        echo "$REASON" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
       env:
         TARGET: ${{ inputs.target-version }}
         FACTORY: ${{ inputs.factory }}
