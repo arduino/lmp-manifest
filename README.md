@@ -4,43 +4,8 @@ Arduino Linux microPlatform Manifest
 Instructions for local builds (Arduino)
 ---------------------------------------
 
-Supported **MACHINE** targets (tested by Arduino):
-
-* portenta-x8 (Standard targets compatible with all carrier boards)
-* portenta-x8-ebbr (Arm SystemReady IR targets)
-* portenta-x8-preempt-rt (Preempt-rt patch targets) !!_**work in progress**_!!
-
-```
-repo init -u https://github.com/arduino/lmp-manifest.git -m arduino.xml -b release
-repo sync
-
-DISTRO=lmp-xwayland MACHINE=portenta-x8 . setup-environment
-echo "ACCEPT_FSL_EULA = \"1\"" >> conf/local.conf
-bitbake lmp-devel-arduino-image
-
-DISTRO=lmp-mfgtool MACHINE=portenta-x8 . setup-environment
-echo "ACCEPT_FSL_EULA = \"1\"" >> conf/local.conf
-echo "MFGTOOL_FLASH_IMAGE = \"lmp-devel-arduino-image\"" >> conf/local.conf
-bitbake mfgtool-files
-```
-
-alternatively you can build a devel image that for now doesn't have wayland support.
-This is currently our way to go for debugging kernel related issues and uses DISTRO lmp-base
-which doesn't include all the security features such as ostree, op-tee and sota that aren't
-strictly needed in this scenario
-
-```
-DISTRO=lmp-base MACHINE=portenta-x8 . setup-environment
-echo "ACCEPT_FSL_EULA = \"1\"" >> conf/local.conf
-bitbake lmp-devel-arduino-image
-```
-
-**Note**: To reduce bitbake parallelism (because you may want to use your computer while performing an image build) edit `conf/local.conf`:
-```diff
-+BB_NUMBER_PARSE_THREADS = "4"
-+BB_NUMBER_THREADS = "4"
-+PARALLEL_MAKE = "-j 4"
-```
+Checkout official [meta-arduino](https://github.com/MaxPayne86Arduino/meta-arduino) yocto layer for build instructions,
+supported hardware & more.
 
 Instructions for local builds (Foundries.io)
 --------------------------------------------
