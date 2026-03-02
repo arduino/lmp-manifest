@@ -5,7 +5,8 @@
     name="partner-arduino" />
 
   <project name="meta-arduino"
-    revision="2ca59b7b372c4796686274192c6a2958cca1d3c4"
+    revision="70a86b2938eed7c574b1912c6ce654d9ec016d19"
+    upstream="scarthgap-kingston-emmc"
     path="layers/meta-arduino"
     remote="partner-arduino"/>
 </manifest>
