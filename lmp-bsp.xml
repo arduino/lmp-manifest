@@ -6,11 +6,7 @@
   <default remote="lmp-mirrors" revision="master" sync-j="4"/>
 
   <project name="meta-arm" path="layers/meta-arm" revision="8e0f8af90fefb03f08cd2228cde7a89902a6b37c"/>
-  <project name="meta-freescale" path="layers/meta-freescale" revision="90cb4c15f033042376c38f90878459089cd10576"/>
-  <project name="meta-freescale-3rdparty" path="layers/meta-freescale-3rdparty" revision="70c83e96c7f75e73245cb77f1b0cada9ed4bbc6d"/>
-  <project name="meta-intel" path="layers/meta-intel" revision="38e75c8c1059e5f37659c140c010eaa203238fd2"/>
-  <project name="meta-raspberrypi" path="layers/meta-raspberrypi" revision="3b27c95c163a042f8056066ec3d27edfcc42da7f"/>
-  <project name="meta-yocto" path="layers/meta-yocto" revision="7f1be5a930554ea5036d2c806aa752ae0b2de826"/>
-  <project name="meta-tegra" path="layers/meta-tegra" revision="6972d5620f1d8e0e30ef381acced5ebe384e739e"/>
-  <project name="meta-ti" path="layers/meta-ti" revision="71f4340b0ba3b50e2a51875df3a3e020e92b5b40"/>
+  <project name="meta-intel" path="layers/meta-intel" revision="b065676a83371b34559f2077d9b2f6a6ac5652f7"/>
+  <project name="meta-raspberrypi" path="layers/meta-raspberrypi" revision="c06ccd1897194c3a193ae1792fb0f7e7ae40763b"/>
+  <project name="meta-yocto" path="layers/meta-yocto" revision="50e5c0d85d3775ac1294bdcd7f11deaa382c9d08"/>
 </manifest>
