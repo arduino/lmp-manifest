@@ -1,9 +1,7 @@
 name: Upload Portenta X8 image pre-release
 
 on:
-  schedule:
-    # Runs every hour for testing
-    - cron: '0 * * * *'
+  push:
 
 jobs:
   GetVersions:

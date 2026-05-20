@@ -65,8 +65,8 @@ jobs:
       id: download-offline-update
       run: |
         fioctl targets offline-update ${{ fromJSON(env.BOARDS)[inputs.board] }}-lmp-$TARGET offline-updates --tag $BRANCH --factory $FACTORY
-        curl -H "osf-token: ${{ secrets.FOUNDRIES_TOKEN }}" "https://api.foundries.io/ota/repo/$FACTORY/api/v1/user_repo/1.root.json" > offline-updates/tuf/1.root.json
-        curl -H "osf-token: ${{ secrets.FOUNDRIES_TOKEN }}" "https://api.foundries.io/ota/repo/$FACTORY/api/v1/user_repo/2.root.json" > offline-updates/tuf/2.root.json
+        fioctl http get "https://api.foundries.io/ota/repo/$FACTORY/api/v1/user_repo/1.root.json" > offline-updates/tuf/1.root.json
+        fioctl http get "https://api.foundries.io/ota/repo/$FACTORY/api/v1/user_repo/2.root.json" > offline-updates/tuf/2.root.json
         tar zcf offline-update-$TARGET.tar.gz offline-updates
         MD5SUM=($(md5sum offline-update-$TARGET.tar.gz))
         echo "md5sum=$MD5SUM" >> $GITHUB_OUTPUT
@@ -108,7 +108,7 @@ jobs:
         for ARTIFACT in $(echo ${{ inputs.artifacts }} | tr ',' '\n')
         do
             echo ${BASE_URL}/${ARTIFACT}
-            curl -H "OSF-TOKEN: ${{ secrets.FOUNDRIES_TOKEN }}" -fLO ${BASE_URL}/${ARTIFACT}
+            fioctl http get "${BASE_URL}/${ARTIFACT}" > "${ARTIFACT}"
         done
         cd ../
         tar zcvf $TARGET.tar.gz $TARGET
