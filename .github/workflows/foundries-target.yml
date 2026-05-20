@@ -45,9 +45,7 @@ jobs:
       - name: Fetch Latest Target
         id: fetch-targets
         run: |
-          TARGETS=$(curl -H "osf-token: ${{ secrets.FOUNDRIES_TOKEN }}" \
-            -H 'accept: application/json' \
-            'https://api.foundries.io/ota/factories/${{ inputs.factory }}/targets/')
+          TARGETS=$(fioctl http get 'https://api.foundries.io/ota/factories/${{ inputs.factory }}/targets/')
           [[ -z $TARGETS ]] && echo "Token not valid" && exit 1
 
           echo $TARGETS | jq -r '.[] | .custom | select(has("tags")) | select(.tags | any(. == "main")) | "\(.version) \(."lmp-manifest-sha")"' | sort -r | while read TARGET SHA
