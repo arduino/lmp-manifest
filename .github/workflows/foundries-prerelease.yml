@@ -32,6 +32,7 @@ permissions:
 env:
   DOMAIN: '{"staging": "oniudra", "production": "arduino"}'
   BOARDS: '{"portentax8": "portenta-x8"}'
+  FIOCTL_VERSION: 'v0.46'
 jobs:
   Deploy:
     runs-on: ubuntu-latest
@@ -42,7 +43,7 @@ jobs:
 
     - name: Install Fioctl
       run: |
-        curl -o /usr/local/bin/fioctl -LO https://github.com/foundriesio/fioctl/releases/download/v0.44/fioctl-linux-amd64
+        curl -o /usr/local/bin/fioctl -LO https://github.com/foundriesio/fioctl/releases/download/${FIOCTL_VERSION}/fioctl-linux-amd64
         chmod +x /usr/local/bin/fioctl
 
     - name: Configure Login to FoundriesFactory
@@ -107,14 +108,15 @@ jobs:
         cd ${TARGET}
         for ARTIFACT in $(echo ${{ inputs.artifacts }} | tr ',' '\n')
         do
-            echo ${BASE_URL}/${ARTIFACT}
-            fioctl http get "${BASE_URL}/${ARTIFACT}" > "${ARTIFACT}"
+            echo "Downloading: ${ARTIFACT}"
+            mkdir -p "$(dirname "$ARTIFACT")"
+            fioctl --factory "$FACTORY" targets artifacts "$TARGET" "$ARTIFACT" > "$ARTIFACT"
         done
         cd ../
         tar zcvf $TARGET.tar.gz $TARGET
       env:
-        TARGET:  ${{ inputs.target-version }}
-        BASE_URL: https://ci.foundries.io/projects/${{ inputs.factory }}/lmp/builds/${{ inputs.target-version }}
+        TARGET: ${{ inputs.target-version }}
+        FACTORY: ${{ inputs.factory }}
 
     - name: Upload "pre-release" artifacts
       run: |

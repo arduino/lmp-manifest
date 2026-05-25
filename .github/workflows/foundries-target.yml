@@ -22,6 +22,8 @@ on:
         value: ${{ jobs.GetDeployedVersion.outputs.bucket-version }}
 permissions:
   contents: read
+env:
+  FIOCTL_VERSION: 'v0.46'
 jobs:
   GetTargetVersion:
     runs-on: 'ubuntu-latest'
@@ -35,7 +37,7 @@ jobs:
 
       - name: Install Fioctl
         run: |
-          curl -o /usr/local/bin/fioctl -LO https://github.com/foundriesio/fioctl/releases/download/v0.44/fioctl-linux-amd64
+          curl -o /usr/local/bin/fioctl -LO https://github.com/foundriesio/fioctl/releases/download/${FIOCTL_VERSION}/fioctl-linux-amd64
           chmod +x /usr/local/bin/fioctl
 
       - name: Configure Login to FoundriesFactory
@@ -45,10 +47,10 @@ jobs:
       - name: Fetch Latest Target
         id: fetch-targets
         run: |
-          TARGETS=$(fioctl http get 'https://api.foundries.io/ota/factories/${{ inputs.factory }}/targets/')
+          TARGETS=$(fioctl --factory "${{ inputs.factory }}" targets list --raw)
           [[ -z $TARGETS ]] && echo "Token not valid" && exit 1
 
-          echo $TARGETS | jq -r '.[] | .custom | select(has("tags")) | select(.tags | any(. == "main")) | "\(.version) \(."lmp-manifest-sha")"' | sort -r | while read TARGET SHA
+          echo "$TARGETS" | jq -r '.signed.targets | to_entries[] | .value.custom | select(has("tags")) | select(.tags | any(. == "main")) | "\(.version) \(."lmp-manifest-sha")"' | sort -nr | while read TARGET SHA
           do
             if [[ -n $(git tag --points-at $SHA | grep arduino-) ]]; then
               echo "Found release target version: $TARGET"
