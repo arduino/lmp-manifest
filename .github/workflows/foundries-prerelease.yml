@@ -109,8 +109,7 @@ jobs:
         for ARTIFACT in $(echo ${{ inputs.artifacts }} | tr ',' '\n')
         do
             echo "Downloading: ${ARTIFACT}"
-            mkdir -p "$(dirname "$ARTIFACT")"
-            fioctl --factory "$FACTORY" targets artifacts "$TARGET" "$ARTIFACT" > "$ARTIFACT"
+            fioctl --factory "$FACTORY" targets artifacts "$TARGET" "$ARTIFACT" > "${ARTIFACT##*/}"
         done
         cd ../
         tar zcvf $TARGET.tar.gz $TARGET
