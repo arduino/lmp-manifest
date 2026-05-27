@@ -65,6 +65,7 @@ jobs:
 
     - name: Send message to Slack
       uses: archive/github-actions-slack@v3.1.0
+      continue-on-error: true
       with:
         slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
         slack-channel: ${{ secrets.SLACK_EXT_CHANNEL }}
