@@ -32,6 +32,7 @@ permissions:
 env:
   DOMAIN: '{"staging": "oniudra", "production": "arduino"}'
   BOARDS: '{"portentax8": "portenta-x8"}'
+  FIOCTL_VERSION: 'v0.46'
 jobs:
   Deploy:
     runs-on: ubuntu-latest
@@ -42,7 +43,7 @@ jobs:
 
     - name: Install Fioctl
       run: |
-        curl -o /usr/local/bin/fioctl -LO https://github.com/foundriesio/fioctl/releases/download/v0.44/fioctl-linux-amd64
+        curl -o /usr/local/bin/fioctl -LO https://github.com/foundriesio/fioctl/releases/download/${FIOCTL_VERSION}/fioctl-linux-amd64
         chmod +x /usr/local/bin/fioctl
 
     - name: Configure Login to FoundriesFactory
@@ -65,8 +66,8 @@ jobs:
       id: download-offline-update
       run: |
         fioctl targets offline-update ${{ fromJSON(env.BOARDS)[inputs.board] }}-lmp-$TARGET offline-updates --tag $BRANCH --factory $FACTORY
-        curl -H "osf-token: ${{ secrets.FOUNDRIES_TOKEN }}" "https://api.foundries.io/ota/repo/$FACTORY/api/v1/user_repo/1.root.json" > offline-updates/tuf/1.root.json
-        curl -H "osf-token: ${{ secrets.FOUNDRIES_TOKEN }}" "https://api.foundries.io/ota/repo/$FACTORY/api/v1/user_repo/2.root.json" > offline-updates/tuf/2.root.json
+        fioctl http get "https://api.foundries.io/ota/repo/$FACTORY/api/v1/user_repo/1.root.json" > offline-updates/tuf/1.root.json
+        fioctl http get "https://api.foundries.io/ota/repo/$FACTORY/api/v1/user_repo/2.root.json" > offline-updates/tuf/2.root.json
         tar zcf offline-update-$TARGET.tar.gz offline-updates
         MD5SUM=($(md5sum offline-update-$TARGET.tar.gz))
         echo "md5sum=$MD5SUM" >> $GITHUB_OUTPUT
@@ -107,14 +108,14 @@ jobs:
         cd ${TARGET}
         for ARTIFACT in $(echo ${{ inputs.artifacts }} | tr ',' '\n')
         do
-            echo ${BASE_URL}/${ARTIFACT}
-            curl -H "OSF-TOKEN: ${{ secrets.FOUNDRIES_TOKEN }}" -fLO ${BASE_URL}/${ARTIFACT}
+            echo "Downloading: ${ARTIFACT}"
+            fioctl --factory "$FACTORY" targets artifacts "$TARGET" "$ARTIFACT" > "${ARTIFACT##*/}"
         done
         cd ../
         tar zcvf $TARGET.tar.gz $TARGET
       env:
-        TARGET:  ${{ inputs.target-version }}
-        BASE_URL: https://ci.foundries.io/projects/${{ inputs.factory }}/lmp/builds/${{ inputs.target-version }}
+        TARGET: ${{ inputs.target-version }}
+        FACTORY: ${{ inputs.factory }}
 
     - name: Upload "pre-release" artifacts
       run: |
@@ -126,7 +127,7 @@ jobs:
         PREFIX: ${{ inputs.board}}image
 
     - name: Send message to Slack
-      uses: archive/github-actions-slack@v2.0.0
+      uses: archive/github-actions-slack@v3.1.0
       id: notify
       with:
         slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
@@ -135,7 +136,8 @@ jobs:
         slack-optional-icon_emoji: ":bookmark:"
 
     - name: Send message to Slack
-      uses: archive/github-actions-slack@v2.0.0
+      uses: archive/github-actions-slack@v3.1.0
+      continue-on-error: true
       with:
         slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
         slack-channel: ${{ secrets.SLACK_EXT_CHANNEL }}
