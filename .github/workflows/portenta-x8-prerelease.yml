@@ -1,6 +1,7 @@
 name: Upload Portenta X8 image pre-release
 
 on:
+  push:
   schedule:
     # Runs every day at 8 AM
     - cron: '0 8 * * *'
