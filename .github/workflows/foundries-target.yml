@@ -44,6 +44,15 @@ jobs:
         run: |
           printf "clientcredentials:\n  client_id: %s\n  client_secret: %s" "${{ secrets.FOUNDRIES_CLIENT_ID }}" "${{ secrets.FOUNDRIES_CLIENT_SECRET }}" > $HOME/.config/fioctl.yaml
 
+      - name: Verify FoundriesFactory Credentials
+        run: |
+          set -euo pipefail
+          if ! fioctl --factory "${{ inputs.factory }}" status >/dev/null 2>&1; then
+            echo "::error::FoundriesFactory credentials are invalid or expired. Please refresh FOUNDRIES_CLIENT_ID / FOUNDRIES_CLIENT_SECRET."
+            exit 1
+          fi
+          echo "FoundriesFactory credentials are valid."
+
       - name: Fetch Latest Target
         id: fetch-targets
         run: |
