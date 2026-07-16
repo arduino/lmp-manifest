@@ -47,15 +47,32 @@ jobs:
       - name: Fetch Latest Target
         id: fetch-targets
         run: |
-          TARGETS=$(fioctl --factory "${{ inputs.factory }}" targets list --raw)
-          [[ -z $TARGETS ]] && echo "Token not valid" && exit 1
+          set -euo pipefail
 
-          echo "$TARGETS" | jq -r '.signed.targets | to_entries[] | .value.custom | select(has("tags")) | select(.tags | any(. == "main")) | "\(.version) \(."lmp-manifest-sha")"' | sort -nr | while read TARGET SHA
-          do
-            if [[ -n $(git tag --points-at $SHA | grep arduino-) ]]; then
+          TARGETS=$(fioctl --factory "${{ inputs.factory }}" targets list --raw)
+          [[ -z "${TARGETS:-}" ]] && echo "Token not valid" && exit 1
+
+          mapfile -t rows < <(
+            echo "$TARGETS" | jq -r '
+              (.signed.targets // {})
+              | to_entries[]
+              | .value.custom? // {}
+              | select((.tags? // []) | index("main"))
+              | select(has("version") and has("lmp-manifest-sha"))
+              | "\(.version) \(.["lmp-manifest-sha"])"
+            ' | sort -nr
+          )
+
+          if [[ ${#rows[@]} -eq 0 ]]; then
+            echo "No main-tagged targets with lmp-manifest-sha found; nothing to process."
+            exit 0
+          fi
+
+          for row in "${rows[@]}"; do
+            read -r TARGET SHA <<<"$row"
+            if [[ -n $(git tag --points-at "$SHA" | grep arduino-) ]]; then
               echo "Found release target version: $TARGET"
-              echo "target-version=$TARGET" >> $GITHUB_OUTPUT
-              found=1
+              echo "target-version=$TARGET" >> "$GITHUB_OUTPUT"
               break
             fi
           done
